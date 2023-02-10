@@ -18,7 +18,7 @@ public class ReplyService {
 
     // where 절에 걸리는 파라메터를 앞에 받기
     @Transactional // 메서드가 종료됐을 때 커밋, 실패했을 때 롤백 ,롤백 기본값은 runtimeException
-    public void 글쓰기(ReplySaveReqDto replySaveReqDto, int principalId) {
+    public void 댓글쓰기(ReplySaveReqDto replySaveReqDto, int principalId) {
 
         int result = replyRepository.insert(
                 replySaveReqDto.getComment(),

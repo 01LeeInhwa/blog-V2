@@ -11,9 +11,14 @@ import lombok.Getter;
 import lombok.Setter;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.User;
+import shop.mtcoding.blog.service.ReplyService;
 
 @Controller
 public class ReplyController {
+
+    @Autowired
+    private ReplyService replyService;
+
     @Autowired
     private HttpSession session;
 
@@ -30,6 +35,7 @@ public class ReplyController {
             throw new CustomException("boardId가 넘어오지않았습니다");
         }
         // 서비스 호출 (replySaveReqDto, principal.gerId())
+        replyService.댓글쓰기(replySaveReqDto, principal.getId());
         return "redirect:/board/" + replySaveReqDto.getBoardId();
     }
 
