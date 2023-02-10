@@ -31,6 +31,8 @@ import shop.mtcoding.blog.dto.board.BoardReq.BoardSaveReqDto;
 import shop.mtcoding.blog.dto.board.BoardReq.BoardUpdateReqDto;
 import shop.mtcoding.blog.dto.board.BoardResp;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
+import shop.mtcoding.blog.dto.reply.ReplyResp;
+import shop.mtcoding.blog.dto.reply.ReplyResp.ReplyDetailRespDto;
 import shop.mtcoding.blog.model.User;
 
 @Transactional // 메서드 실행 직후 무조건 롤백 , 단점 : auto_increment 초기화가 안됨 //(서비스 트랜잭션은 메서드가 종료됐을 때 커밋,
@@ -83,23 +85,25 @@ public class BoardControllerTest { // 테스트는 격리성 필요 => 순서 �
     @Test
     public void detail_test() throws Exception {
         // given
-
         int id = 1;
 
         // when
         ResultActions resultActions = mvc.perform(
                 get("/board/" + id));
         Map<String, Object> map = resultActions.andReturn().getModelAndView().getModel();
-        BoardDetailRespDto dto = (BoardDetailRespDto) map.get("dto");
-        String model = om.writeValueAsString(dto);
-        System.out.println("테스트 : " + model);
+        BoardDetailRespDto boardDto = (BoardDetailRespDto) map.get("boardDto");
+        List<ReplyDetailRespDto> replyDtos = (List<ReplyDetailRespDto>) map.get("replyDtos");
+        String boardJson = om.writeValueAsString(boardDto);
+        String replyListJson = om.writeValueAsString(replyDtos);
+        System.out.println("테스트 : " + boardJson);
 
         // then
         resultActions.andExpect(status().isOk());
-        assertThat(dto.getUsername()).isEqualTo("ssar");
-        assertThat(dto.getUserId()).isEqualTo(1);
-        assertThat(dto.getTitle()).isEqualTo("1번째 제목");
-
+        assertThat(boardDto.getUsername()).isEqualTo("ssar");
+        assertThat(boardDto.getUserId()).isEqualTo(1);
+        assertThat(boardDto.getTitle()).isEqualTo("1번째 제목");
+        assertThat(replyDtos.get(1).getComment()).isEqualTo("댓글3");
+        assertThat(replyDtos.get(1).getUsername()).isEqualTo("love");
     }
 
     @Test
