@@ -22,11 +22,15 @@ import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.Board;
 import shop.mtcoding.blog.model.BoardRepository;
+import shop.mtcoding.blog.model.ReplyRepository;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.service.BoardService;
 
 @Controller
 public class BoardController {
+
+    @Autowired
+    private ReplyRepository replyRepository;
 
     @Autowired
     private BoardRepository boardRepository;
@@ -101,7 +105,8 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id, Model model) {
-        model.addAttribute("dto", boardRepository.findByIdWithUser(id));
+        model.addAttribute("boardDto", boardRepository.findByIdWithUser(id)); // 게시글 윗부분
+        model.addAttribute("replyDtos", replyRepository.findByBoardIdWithUser(id)); // 댓글이 여러개일 수 있으니 복수로 이름붙이기
         return "board/detail";
     }
 
