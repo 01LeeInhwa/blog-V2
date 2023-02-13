@@ -50,13 +50,18 @@
                 <ul id="reply-box" class="list-group">
 
                     <c:forEach items="${replyDtos}" var="reply">
-                    <li id="reply-${reply.id}" class="list-group-item d-flex justify-content-between">
-                        <div>${reply.comment}</div>
-                        <div class="d-flex">
-                            <div class="font-italic">작성자 : ${reply.username}</div>
-                            <button onClick="deleteByReplyId(${reply.id})" class="badge bg-secondary">삭제</button>
-                        </div>
-                    </li>
+                        <li id="reply-${reply.id}" class="list-group-item d-flex justify-content-between">
+                            <div>${reply.comment}</div>
+                            <div class="d-flex">
+                                <div class="font-italic">작성자 : ${reply.username}</div>
+
+                                <c:if test="${principal.id == reply.userId}">
+                                    <button onClick="deleteByReplyId(${reply.id})"
+                                        class="badge bg-secondary">삭제</button>
+                                </c:if>
+
+                            </div>
+                        </li>
                     </c:forEach>
 
                 </ul>
@@ -64,11 +69,22 @@
         </div>
 
         <script>
-            function deleteByReplyId(id){
-                //$("#reply-" + id).remove();
-                //location.reload();
-
+            function deleteByReplyId(id) {
+                $.ajax({
+                    type: "delete",
+                    url: "/reply/" + id,
+                    dataType: "json"
+                }).done((res) => { // 20X 일때
+                    alert(res.msg);
+                    //location.reload();
+                    $("#reply-" + id).remove();
+                }).fail((err) => { // 40X, 50X 일때
+                    alert(err.responseJSON.msg);
+                });
             }
+        </script>
+
+        <script>
 
             function deleteById(id) {
                 $.ajax({
