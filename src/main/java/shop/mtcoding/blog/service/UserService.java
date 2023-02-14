@@ -40,5 +40,6 @@ public class UserService {
         }
 
         return principal;
-    };
+    }
+
 }

@@ -53,7 +53,7 @@
                         </c:choose>
                         </ul>
                         <div>
-                            <a href="/user/profileUpdate"><img src="/images/profile.jpeg" style="width: 35px;"
+                            <a href="/user/profileUpdateForm"><img src="/images/profile.jpeg" style="width: 35px;"
                                     class="rounded-circle" alt="Cinque Terre"></a>
                         </div>
                     </div>
