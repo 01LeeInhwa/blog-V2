@@ -3,6 +3,7 @@ package shop.mtcoding.blog.controller;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,6 +21,7 @@ import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.model.UserRepository;
 import shop.mtcoding.blog.service.UserService;
+import shop.mtcoding.blog.util.PathUtil;
 
 @Controller
 public class UserController {
@@ -34,31 +36,23 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/user/profileUpdate")
-    public @ResponseBody String profileUpdate(MultipartFile profile) {
-        System.out.println(profile.getContentType());
-        System.out.println(profile.getSize());
-        System.out.println(profile.getOriginalFilename());
+    public String profileUpdate(MultipartFile profile) {
+
+        User principal = (User) session.getAttribute("principal");
+        if (principal == null) {
+            return "redirect:/loginForm";
+        }
 
         if (profile.isEmpty()) {
             throw new CustomException("사진이 전송되지 않았습니다");
         }
 
-        // 1번 파일은 하드디스크에 저장
-        String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\";
-        System.out.println(savePath);
-        Path imageFilePath = Paths.get(savePath + "\\" + profile.getOriginalFilename());
+        // 사진이 아니면 Exception 터트리기
 
-        System.out.println(imageFilePath);
+        User userPS = userService.프로필사진수정(profile, principal.getId());
+        session.setAttribute("principal", userPS);
 
-        try {
-            Files.write(imageFilePath, profile.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // 2번 저장된 파일의 경로를 DB에 저장
-
-        return "ok";
+        return "redirect:/";
     }
 
     @GetMapping("/user/profileUpdateForm")
