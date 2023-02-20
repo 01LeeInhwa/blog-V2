@@ -31,7 +31,22 @@
                 <div>${boardDto.content}</div>
             </div>
             <hr />
-            <i id="heart" class="fa-regular fa-heart fa-lg"></i>
+
+            <i id="heart" class="fa-regular fa-heart fa-lg" value="no"></i>
+
+            <script>
+                $("#heart").click(() => {
+                    let value = $("#heart").val();
+                    if (value == "ok") {
+                        $("#heart").removeClass("fa-solid");
+                        $("#heart").val("no");
+                    } else {
+                        $("#heart").addClass("fa-solid");
+                        $("#heart").val("ok");
+                    }
+                });
+            </script>
+
 
             <div class="card mt-3">
                 <form action="/reply" method="post">

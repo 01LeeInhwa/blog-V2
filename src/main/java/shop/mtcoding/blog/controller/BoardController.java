@@ -107,6 +107,7 @@ public class BoardController {
     public String detail(@PathVariable int id, Model model) {
         model.addAttribute("boardDto", boardRepository.findByIdWithUser(id)); // 게시글 윗부분
         model.addAttribute("replyDtos", replyRepository.findByBoardIdWithUser(id)); // 댓글이 여러개일 수 있으니 복수로 이름붙이기
+
         return "board/detail";
     }
 
