@@ -22,6 +22,7 @@ import shop.mtcoding.blog.handler.ex.CustomApiException;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.Board;
 import shop.mtcoding.blog.model.BoardRepository;
+import shop.mtcoding.blog.model.LoveRepository;
 import shop.mtcoding.blog.model.ReplyRepository;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.service.BoardService;
@@ -40,6 +41,9 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private LoveRepository loveRepository;
 
     @PutMapping("/board/{id}")
     public @ResponseBody ResponseEntity<?> update(@PathVariable int id,
@@ -105,8 +109,14 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id, Model model) {
+        User principal = (User) session.getAttribute("principal");
+        if (principal != null) {
+            model.addAttribute("loveDto", loveRepository.findByBoardIdAndUserId(id, principal.getId()));
+        }
+
         model.addAttribute("boardDto", boardRepository.findByIdWithUser(id)); // 게시글 윗부분
         model.addAttribute("replyDtos", replyRepository.findByBoardIdWithUser(id)); // 댓글이 여러개일 수 있으니 복수로 이름붙이기
+
         return "board/detail";
     }
 
